@@ -1,27 +1,37 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 
+/** Tiny camera HUD with blinking REC + timecode (TS-safe RAF cleanup) */
 export default function TimecodeHUD({ fps = 30 }: { fps?: number }) {
   const [frames, setFrames] = useState(0);
-  const raf = useRef<number>();
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     let last = performance.now();
+
     const step = (now: number) => {
       if (now - last >= 1000 / fps) {
-        setFrames(f => f + 1);
+        setFrames((f) => f + 1);
         last = now;
       }
-      raf.current = requestAnimationFrame(step);
+      rafRef.current = requestAnimationFrame(step);
     };
-    raf.current = requestAnimationFrame(step);
-    return () => raf.current && cancelAnimationFrame(raf.current);
+
+    rafRef.current = requestAnimationFrame(step);
+
+    // Cleanup MUST return void and never return a number
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
   }, [fps]);
 
   const totalSeconds = Math.floor(frames / fps);
-  const ss = String(totalSeconds % 60).padStart(2, '0');
   const mm = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+  const ss = String(totalSeconds % 60).padStart(2, '0');
   const ff = String(frames % fps).padStart(2, '0');
 
   return (
@@ -29,7 +39,9 @@ export default function TimecodeHUD({ fps = 30 }: { fps?: number }) {
       <span className="rec-dot" />
       <span>REC</span>
       <span className="tc-sep">•</span>
-      <span className="digits">{mm}:{ss}:{ff}</span>
+      <span className="digits">
+        {mm}:{ss}:{ff}
+      </span>
     </div>
   );
 }
