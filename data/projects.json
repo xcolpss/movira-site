@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "kama-tantric",
+    "title": "Kama Tantric Chocolate",
+    "logline": "Ad cut • surreal textures with kinetic type.",
+    "poster": "https://picsum.photos/seed/kama/600/900"
+  },
+  {
+    "slug": "music-video",
+    "title": "Music Video",
+    "logline": "VFX inserts • projector burns • motion surreal.",
+    "poster": "https://picsum.photos/seed/academy/600/900"
+  },
+  {
+    "slug": "brand-film",
+    "title": "Brand Film",
+    "logline": "Corporate brand identity meets cinematic storytelling.",
+    "poster": "https://picsum.photos/seed/brand/600/900"
+  },
+  {
+    "slug": "short-film",
+    "title": "Short Film",
+    "logline": "Indie storytelling with a bold experimental edge.",
+    "poster": "https://picsum.photos/seed/short/600/900"
+  },
+  {
+    "slug": "vfx-breakdown",
+    "title": "VFX Breakdown",
+    "logline": "Step-by-step behind the effects that make the magic.",
+    "poster": "https://picsum.photos/seed/vfx/600/900"
+  },
+  {
+    "slug": "academy-demo",
+    "title": "Academy Demo Reel",
+    "logline": "Real student projects compiled into one cinematic reel.",
+    "poster": "https://picsum.photos/seed/academy/600/900"
+  }
+]

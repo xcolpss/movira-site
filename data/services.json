@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Video Editing",
+    "bullets": [
+      "Shorts: Reels/Shorts/TikTok",
+      "Long-form: YouTube/Podcasts/Docs",
+      "Retention-first cuts: hooks, pacing, captions"
+    ]
+  },
+  {
+    "title": "VFX / CGI",
+    "bullets": [
+      "Clean compositing & set extensions",
+      "CGI product inserts",
+      "UE5 previz & cinematic shots"
+    ]
+  },
+  {
+    "title": "Web & Branding",
+    "bullets": [
+      "Portfolios & landing pages",
+      "Creator brand kits & thumbnails",
+      "Motion intros/outros"
+    ]
+  },
+  {
+    "title": "Photo",
+    "bullets": [
+      "Retouching & composites",
+      "Product cleanup",
+      "Ad-ready exports"
+    ]
+  },
+  {
+    "title": "Consulting",
+    "bullets": [
+      "Content systems & analytics",
+      "YouTube growth playbooks",
+      "Production planning"
+    ]
+  }
+]
