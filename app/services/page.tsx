@@ -1,36 +1,64 @@
-import services from '@/data/services.json'
+// app/services/page.tsx
+export default function ServicesPage() {
+  const capabilities = [
+    { k: "Editing", v: "Trailers, campaigns, shorts, case studies" },
+    { k: "VFX / CGI", v: "Design, simulation, lighting, compositing" },
+    { k: "Web", v: "Next.js sites, performant UX, interactions" },
+    { k: "Brand", v: "Identity, systems, toolkits, motion guidelines" },
+  ];
 
-export default function Services(){
+  const process = [
+    { k: "01. Discover", v: "Brief, goals, constraints, success metrics" },
+    { k: "02. Direction", v: "Mood, references, boards, creative route" },
+    { k: "03. Build", v: "Edit/VFX/Code; weekly check-ins; versions" },
+    { k: "04. Deliver", v: "Master files, toolkits, handover, docs" },
+  ];
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="h1">Agency Services</h1>
-      <p className="sub mt-2">White-first layouts. Clear offers. Fast delivery.</p>
-      <div className="grid md:grid-cols-2 gap-4 mt-8">
-        {services.map(s => (
-          <div className="card p-6" key={s.title}>
-            <h3 className="text-xl font-semibold">{s.title}</h3>
-            <ul className="mt-2 text-sm text-neutral-700 list-disc pl-5">{s.bullets.map((b:string,i:number)=>(<li key={i}>{b}</li>))}</ul>
-            <a className="btn btn-gold mt-5 inline-block" href="/contact">Get Quote</a>
-          </div>
-        ))}
-      </div>
+    <main className="bg-bg text-ink">
+      <section className="mx-auto max-w-7xl px-6 pt-16 pb-10">
+        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Services</h1>
+        <p className="mt-3 text-ink/75 max-w-2xl">
+          Practical capabilities aligned to strategy—kept simple, fast, and measurable.
+        </p>
+      </section>
 
-      <section className="mt-12">
-        <h2 className="h2">Productized Plans</h2>
-        <div className="grid md:grid-cols-3 gap-4 mt-4">
-          {['Starter','Growth','Pro'].map((name)=> (
-            <div className="card p-6" key={name}>
-              <h3 className="text-lg font-semibold">{name}</h3>
-              <ul className="mt-2 text-sm text-neutral-700 list-disc pl-5">
-                <li>Shorts bundle</li>
-                <li>Long-form add-ons</li>
-                <li>Thumbnails / CGI inserts</li>
-              </ul>
-              <a className="btn btn-gold mt-5 inline-block" href="/contact">Choose {name}</a>
-            </div>
-          ))}
+      <section className="mx-auto max-w-7xl px-6 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="border border-border/80 rounded-2xl p-6">
+            <h2 className="text-xl font-medium mb-4">Capabilities</h2>
+            <ul className="space-y-3">
+              {capabilities.map((c) => (
+                <li key={c.k} className="flex justify-between gap-6">
+                  <span className="uppercase tracking-[0.16em] text-[12px] text-ink/80">{c.k}</span>
+                  <span className="text-ink">{c.v}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="border border-border/80 rounded-2xl p-6">
+            <h2 className="text-xl font-medium mb-4">Process</h2>
+            <ul className="space-y-3">
+              {process.map((c) => (
+                <li key={c.k} className="flex justify-between gap-6">
+                  <span className="uppercase tracking-[0.16em] text-[12px] text-ink/80">{c.k}</span>
+                  <span className="text-ink">{c.v}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
-    </div>
-  )
+
+      <section className="mx-auto max-w-7xl px-6 py-14">
+        <div className="border border-border/80 rounded-2xl p-6">
+          <h2 className="text-xl font-medium mb-2">Typical Deliverables</h2>
+          <p className="text-ink/80">
+            Masters (ProRes/H.264), project files, web bundles, brand files (AI/PSD/FIG), usage docs and toolkits.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
 }

@@ -1,116 +1,60 @@
-'use client';
+﻿'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from "react";
 
-type Props = {
-  markers?: number;      // number of tick lines
-  label?: string;        // initial display value
-  sub?: string;          // e.g. SHUTTER
-};
+export default function HeroSlider({
+  markers = 80,
+  label = "1/50",
+  sub = "SHUTTER",
+}: { markers?: number; label?: string; sub?: string }) {
+  const [x, setX] = useState(0.4); // 0..1
+  const railRef = useRef<HTMLDivElement | null>(null);
+  const [left, setLeft] = useState(0);
 
-// shutter labels we snap to
-const SHUTTER_STOPS = [
-  '1/8','1/10','1/15','1/20','1/30','1/40','1/50','1/60','1/80',
-  '1/100','1/125','1/160','1/200'
-];
+  const ticks = useMemo(() => Array.from({length: markers}, (_,i)=> i), [markers]);
 
-export default function HeroSlider({ markers = 80, label = '1/50', sub = 'SHUTTER' }: Props) {
-  const railRef = useRef<HTMLDivElement>(null);
-  const [pct, setPct] = useState(0.5);                // 0..1
-  const [readout, setReadout] = useState(label);
-  const [hot, setHot] = useState<number | null>(null); // tick under cursor
-
-  const pctToLabel = (p: number) => {
-    const idx = Math.min(
-      SHUTTER_STOPS.length - 1,
-      Math.max(0, Math.round(p * (SHUTTER_STOPS.length - 1)))
-    );
-    return SHUTTER_STOPS[idx];
-  };
-
-  useEffect(() => { setReadout(pctToLabel(pct)); }, [pct]);
+  useEffect(() => {
+    const el = railRef.current;
+    if(!el) return;
+    const r = el.getBoundingClientRect();
+    setLeft(12 + x * (r.width - 24)); // account for padding
+  }, [x]);
 
   useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
-
     let dragging = false;
 
-    const toPct = (clientX: number) => {
+    const getX = (clientX:number) => {
       const r = rail.getBoundingClientRect();
-      return Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+      const nx = (clientX - r.left - 12) / (r.width - 24);
+      return Math.min(1, Math.max(0, nx));
     };
 
-    const nearestTick = (clientX: number) => {
-      const r = rail.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
-      return Math.round(p * (markers - 1));
-    };
+    const onDown = (e:MouseEvent) => { dragging = true; setX(getX(e.clientX)); };
+    const onMove = (e:MouseEvent) => { if(dragging) setX(getX(e.clientX)); };
+    const onUp = () => { dragging = false; };
 
-    // hover highlight
-    const onMove = (e: MouseEvent) => {
-      setHot(nearestTick(e.clientX));
-      if (dragging) setPct(toPct(e.clientX));
-    };
-    const onLeave = () => setHot(null);
-
-    // drag
-    const down = (e: MouseEvent) => { dragging = true; setPct(toPct(e.clientX)); };
-    const up   = () => { dragging = false; };
-
-    rail.addEventListener('mousemove', onMove);
-    rail.addEventListener('mouseleave', onLeave);
-    rail.addEventListener('mousedown', down);
-    window.addEventListener('mouseup', up);
+    rail.addEventListener('mousedown', onDown);
     window.addEventListener('mousemove', onMove);
-
-    // touch
-    const tMove = (e: TouchEvent) => { setHot(nearestTick(e.touches[0].clientX)); if (dragging) setPct(toPct(e.touches[0].clientX)); };
-    const tDown = (e: TouchEvent) => { dragging = true; setPct(toPct(e.touches[0].clientX)); setHot(nearestTick(e.touches[0].clientX)); };
-    const tUp   = () => { dragging = false; setHot(null); };
-
-    rail.addEventListener('touchstart', tDown, { passive: true });
-    window.addEventListener('touchmove', tMove, { passive: true });
-    window.addEventListener('touchend', tUp);
-
+    window.addEventListener('mouseup', onUp);
     return () => {
-      rail.removeEventListener('mousemove', onMove);
-      rail.removeEventListener('mouseleave', onLeave);
-      rail.removeEventListener('mousedown', down);
-      window.removeEventListener('mouseup', up);
+      rail.removeEventListener('mousedown', onDown);
       window.removeEventListener('mousemove', onMove);
-      rail.removeEventListener('touchstart', tDown);
-      window.removeEventListener('touchmove', tMove);
-      window.removeEventListener('touchend', tUp);
+      window.removeEventListener('mouseup', onUp);
     };
-  }, [markers]);
-
-  const ticks = Array.from({ length: markers }, (_, i) => {
-    const major = i % 10 === 0;
-    const active = hot === i;
-    return (
-      <div
-        key={i}
-        className={`hero-tick${major ? ' major' : ''}${active ? ' active' : ''}`}
-      />
-    );
-  });
+  }, []);
 
   return (
-    <div className="hero-slider relative">
-      {/* Fixed value + sublabel on the left */}
-      <div className="hero-slider-label-fixed pill">{readout}</div>
-      <div className="hero-slider-subpill-fixed">{sub}</div>
-
-      {/* Rail */}
-      <div ref={railRef} className="hero-slider-row select-none cursor-pointer">
-        {ticks}
-        <div
-          className="hero-tick-indicator"
-          style={{ left: `${pct * 100}%`, transform: 'translateX(-50%)' }}
-          aria-hidden
-        />
+    <div className="hero-slider">
+      <div className="hero-slider-row" ref={railRef}>
+        {ticks.map((i) => (
+          <div key={i} className={`hero-tick ${i % 10 === 0 ? 'major' : ''}`}/>
+        ))}
+        <div className="hero-knob" style={{ left }} />
       </div>
+      <div className="hero-label">{label}</div>
+      <div className="hero-sub">{sub}</div>
     </div>
   );
 }

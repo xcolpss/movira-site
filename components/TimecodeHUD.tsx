@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-/** Tiny camera HUD with blinking REC + timecode (TS-safe RAF cleanup) */
 export default function TimecodeHUD({ fps = 30 }: { fps?: number }) {
   const [frames, setFrames] = useState(0);
   const rafRef = useRef<number | null>(null);
@@ -19,14 +18,7 @@ export default function TimecodeHUD({ fps = 30 }: { fps?: number }) {
     };
 
     rafRef.current = requestAnimationFrame(step);
-
-    // Cleanup MUST return void and never return a number
-    return () => {
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
-    };
+    return () => { if (rafRef.current !== null) cancelAnimationFrame(rafRef.current); };
   }, [fps]);
 
   const totalSeconds = Math.floor(frames / fps);
@@ -39,9 +31,7 @@ export default function TimecodeHUD({ fps = 30 }: { fps?: number }) {
       <span className="rec-dot" />
       <span>REC</span>
       <span className="tc-sep">•</span>
-      <span className="digits">
-        {mm}:{ss}:{ff}
-      </span>
+      <span className="digits">{mm}:{ss}:{ff}</span>
     </div>
   );
 }

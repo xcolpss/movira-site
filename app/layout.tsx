@@ -1,23 +1,48 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+﻿// app/layout.tsx
+import type { Metadata } from "next";
+import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+/**
+ * Place these files in your C: copy:
+ *   C:\Users\subha\Downloads\movira-white-gold\movira-white-gold\app\icon.png
+ *   C:\Users\subha\Downloads\movira-white-gold\movira-white-gold\app\apple-icon.png
+ *
+ * Recommended: 512x512 PNG.
+ */
 
 export const metadata: Metadata = {
-  title: 'Movira Studios — Learn, Create, Film',
-  description: 'Agency • Academy • Originals',
-  icons: { icon: '/favicon.png' }
-}
+  title: "Movira Studio",
+  description: "Creative studio for film, VFX, CGI, and design.",
+  themeColor: "#0b0b0b",
+  // Be explicit so Next ignores any legacy public/favicon.ico
+  icons: {
+    icon: "/icon.png?v=6",
+    shortcut: "/icon.png?v=6",
+    apple: "/apple-icon.png?v=6",
+  },
+};
 
-
-export default function RootLayout({ children }:{ children: React.ReactNode }){
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
-      <body>
-        <Navbar/>
+    <html lang="en" id="top">
+      <head>
+        {/* Extra explicit links for stubborn caches/browsers */}
+        <link rel="icon" href="/icon.png?v=6" type="image/png" />
+        <link rel="shortcut icon" href="/icon.png?v=6" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png?v=6" />
+        <meta name="theme-color" content="#0b0b0b" />
+      </head>
+      <body className="bg-ink text-bg antialiased ">
+        <Navbar />
         <main>{children}</main>
-        <Footer/>
+        <Footer />
       </body>
     </html>
-  )
+  );
 }
