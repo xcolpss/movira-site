@@ -103,7 +103,7 @@ export default function HomePage() {
             <div className="hidden md:block md:col-span-5 md:justify-self-end">
               <div
                 className="group inline-flex items-center justify-center
-                           w-56 h-56 rounded-full bg-white/10 ring-1 ring-white/20
+                           w-65 h-65 rounded-full bg-white/10 ring-1 ring-white/20
                            transition-all duration-300 ease-out
                            motion-safe:hover:scale-[1.06] motion-safe:hover:ring-white/40 motion-safe:hover:bg-white/15 motion-safe:hover:shadow-[0_0_40px_rgba(255,255,255,0.08)]"
                 aria-label="Movira Studio logo"
@@ -111,8 +111,8 @@ export default function HomePage() {
                 <Image
                   src="/logo.png?v=9"
                   alt="Movira Studio"
-                  width={256}
-                  height={256}
+                  width={300}
+                  height={300}
                   priority
                   className="object-contain pointer-events-none transition-transform duration-300 ease-out motion-safe:group-hover:scale-105"
                 />

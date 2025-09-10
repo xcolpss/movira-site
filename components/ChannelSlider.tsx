@@ -1,10 +1,16 @@
 // components/ChannelSlider.tsx
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-type Item = { title: string; href: string; handle: string };
+type Item = {
+  title: string;
+  href: string;
+  handle?: string;   // e.g. "@heyitsmr.j"
+  img?: string;      // optional explicit thumbnail
+};
 
 export default function ChannelSlider({
   items,
@@ -13,62 +19,121 @@ export default function ChannelSlider({
   items: Item[];
   title?: string;
 }) {
-  const scroller = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
 
-  const scroll = (dir: "left" | "right") => {
-    const el = scroller.current;
+  // derive a thumbnail (fallback to unavatar) so cards never look empty
+  const withThumbs = useMemo(() => {
+    return items.map((it) => {
+      const handle = it.handle?.replace(/^@/, "") ?? "";
+      const fallback = handle
+        ? `https://unavatar.io/${encodeURIComponent(handle)}`
+        : "/logo.png"; // final fallback
+      return { ...it, _thumb: it.img || fallback };
+    });
+  }, [items]);
+
+  // scroll to index
+  useEffect(() => {
+    const el = trackRef.current;
     if (!el) return;
-    const amount = Math.min(el.clientWidth * 0.9, 480);
-    el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
-  };
+    const child = el.children[index] as HTMLElement | undefined;
+    if (child) child.scrollIntoView({ behavior: "smooth", inline: "start" });
+  }, [index]);
+
+  const prev = () => setIndex((i) => Math.max(0, i - 1));
+  const next = () => setIndex((i) => Math.min(withThumbs.length - 1, i + 1));
 
   return (
     <section className="bg-bg">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-14 md:py-16">
-        <div className="mb-5 sm:mb-7 flex items-center justify-between">
-          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+      <div className="mx-auto max-w-7xl px-5 sm:px-6 py-10 sm:py-12 md:py-16">
+        <div className="mb-4 md:mb-6 flex items-center justify-between">
+          <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-ink">
+            {title}
+          </h2>
 
-          {/* Arrow controls only on md+; mobile uses swipe */}
-          <div className="hidden md:flex gap-2">
+          {/* Nav buttons */}
+          <div className="hidden sm:flex items-center gap-2">
             <button
-              onClick={() => scroll("left")}
-              className="h-9 w-9 rounded-full border border-border/80 hover:bg-ink/5"
-              aria-label="Scroll left"
+              onClick={prev}
+              aria-label="Previous"
+              className="size-9 rounded-full border border-border hover:bg-ink/5 grid place-content-center"
             >
-              ‹
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                {/* CHANGED: stroke to black */}
+                <path d="M14 6l-6 6 6 6" stroke="black" strokeWidth="1.6" />
+              </svg>
             </button>
             <button
-              onClick={() => scroll("right")}
-              className="h-9 w-9 rounded-full border border-border/80 hover:bg-ink/5"
-              aria-label="Scroll right"
+              onClick={next}
+              aria-label="Next"
+              className="size-9 rounded-full border border-border hover:bg-ink/5 grid place-content-center"
             >
-              ›
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                {/* CHANGED: stroke to black */}
+                <path d="M10 6l6 6-6 6" stroke="black" strokeWidth="1.6" />
+              </svg>
             </button>
           </div>
         </div>
 
+        {/* Track */}
         <div
-          ref={scroller}
-          className="flex gap-4 sm:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x"
+          ref={trackRef}
+          className="flex gap-5 snap-x snap-mandatory overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {items.map((c) => (
-            <Link
-              key={c.href}
-              href={c.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="snap-center shrink-0 w-[86%] xs:w-[75%] sm:w-[48%] md:w-[32%] rounded-2xl border border-border/80 overflow-hidden hover:shadow-lg transition group"
+          {withThumbs.map((it, i) => (
+            <article
+              key={it.href + i}
+              className="min-w-[85%] sm:min-w-[44%] md:min-w-[31%] snap-start rounded-2xl border border-border/70 overflow-hidden bg-white"
             >
-              <div className="relative aspect-[16/9] bg-gradient-to-br from-ink/10 via-ink/6 to-ink/10 grid place-items-center">
-                <div className="h-12 w-12 rounded-full bg-ink/10 grid place-items-center border border-ink/15 text-ink/50">
-                  ▶
+              <Link href={it.href} target="_blank">
+                {/* Thumb */}
+                <div className="relative aspect-[16/9] bg-ink/5">
+                  <Image
+                    src={it._thumb}
+                    alt={it.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 33vw"
+                    unoptimized
+                  />
+                  {/* Center play pill */}
+                  <div className="absolute inset-0 grid place-content-center">
+                    <span className="inline-grid place-content-center size-10 rounded-full bg-bg/70 text-ink ring-1 ring-border/80 backdrop-blur-sm">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 8l7 4-7 4V8z" />
+                      </svg>
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="p-4 sm:p-5">
-                <div className="text-base sm:text-lg font-medium text-ink group-hover:opacity-85">{c.title}</div>
-                <div className="text-sm text-ink/70">{c.handle}</div>
-              </div>
-            </Link>
+
+                {/* Meta */}
+                <div className="p-4 md:p-5">
+                  <div className="text-[15px] md:text-base font-medium text-ink">
+                    {it.title}
+                  </div>
+                  {it.handle && (
+                    <div className="mt-0.5 text-sm text-ink/70">{it.handle}</div>
+                  )}
+                </div>
+              </Link>
+            </article>
+          ))}
+        </div>
+
+        {/* Dots */}
+        <div className="mt-4 flex items-center gap-2 justify-end">
+          {withThumbs.map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => setIndex(i)}
+              className={[
+                "size-3 rounded-full border",
+                i === index ? "bg-ink border-ink" : "border-border",
+              ].join(" ")}
+            />
           ))}
         </div>
       </div>
