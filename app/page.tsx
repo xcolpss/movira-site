@@ -5,13 +5,37 @@ import ChannelSlider from "@/components/ChannelSlider";
 import BrandsMarquee from "@/components/BrandsMarquee";
 
 export default function HomePage() {
+  // ✅ point to your local logos (public/logos/*.jpg)
   const channels = [
-    { title: "Hey its mr J", href: "https://youtube.com/@heyitsmr.j", handle: "@heyitsmr.j" },
-    { title: "Watch Dogs Bodycam", href: "https://youtube.com/@watchdogbwc", handle: "@watchdogbwc" },
-    { title: "Tilt", href: "https://youtube.com/@tilt223", handle: "@tilt223" },
+    {
+      title: "Hey its mr J",
+      href: "https://youtube.com/@heyitsmr.j",
+      handle: "@heyitsmr.j",
+      img: "/logos/heyitsmrj.jpg",
+    },
+    {
+      title: "Watch Dogs Bodycam",
+      href: "https://youtube.com/@watchdogbwc",
+      handle: "@watchdogbwc",
+      img: "/logos/watchdogs.jpg",
+    },
+    {
+      title: "Tilt",
+      href: "https://youtube.com/@tilt223",
+      handle: "@tilt223",
+      img: "/logos/tilt.jpg",
+    },
   ];
 
-  const brands = ["Gemthree", "Rubrics", "Tilt", "Watch Dogs bodycam", "Hey its Mr J", "Techno World", "Kama Love"];
+  const brands = [
+    "Gemthree",
+    "Rubrics",
+    "Tilt",
+    "Watch Dogs bodycam",
+    "Hey its Mr J",
+    "Techno World",
+    "Kama Love",
+  ];
 
   const services = [
     { k: "Editing", v: "Trailers, campaigns, shorts" },
@@ -25,8 +49,6 @@ export default function HomePage() {
       {/* ========================= HERO ========================= */}
       <section className="relative bg-ink text-bg">
         <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink to-ink/95" />
-
-        {/* Mobile gets a bit more bottom space since services sit inside hero */}
         <div className="relative mx-auto max-w-7xl px-5 sm:px-6 pt-16 sm:pt-20 md:pt-36 pb-12 sm:pb-14 md:pb-28">
           <div className="md:grid md:grid-cols-12 md:gap-10 md:items-center">
             {/* Copy */}
